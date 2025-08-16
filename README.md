@@ -20,14 +20,24 @@ project_root/
 ├── data/
 │   ├── boxed_640x640/          # Processed dataset (640x640 cutouts)
 │   │   ├── images/             # Train/val/test image splits
-│   │   └── labels/             # YOLO-format annotations
+│   │   ├── labels/             # YOLO-format annotations
+│   │   ├── dataset.yaml        # YOLO training configuration
+│   │   └── README.md           # Dataset documentation
+│   ├── evaluation/             # Verification outputs
+│   │   └── boxed_640x640/      # Visualized images with bounding boxes
 │   └── semantic_masks/         # Source dataset
 │       ├── images/             # Original images from cameras A & B
 │       └── masks/              # Corresponding bitmap masks
 ├── models/                     # Trained model outputs
 ├── src/
-│   ├── data/
-│   │   └── preprocess.py       # Dataset preprocessing pipeline
+│   ├── data/                   # Modular data processing utilities
+│   │   ├── __init__.py         # Package initialization
+│   │   ├── preprocess.py       # Main preprocessing pipeline
+│   │   ├── mask_utils.py       # Object center detection utilities
+│   │   ├── cutout_utils.py     # Image cutout generation utilities
+│   │   ├── yolo_utils.py       # YOLO label conversion utilities
+│   │   ├── dataset_utils.py    # Dataset configuration utilities
+│   │   └── verify_labels.py    # Image-label verification tool
 │   └── models/
 │       ├── train.py            # Model training script
 │       ├── eval.py             # Evaluation and visualization
@@ -50,6 +60,7 @@ project_root/
 - **Format**: 640x640 pixel cutouts with YOLO annotations
 - **Split**: 80/10/10 (train/val/test)
 - **Labels**: Normalized bounding boxes in YOLO format
+- **Class**: Single class 'poo' with ID 0 for fine-tuning
 
 ## Getting Started
 
@@ -90,7 +101,13 @@ Evaluate model performance and visualize predictions:
 python src/models/eval.py
 ```
 
-#### 4. Export to LiteRT
+#### 4. Verify Dataset (Optional)
+Visualize images with bounding boxes for quality control:
+```bash
+python src/data/verify_labels.py val <image_filename>
+```
+
+#### 5. Export to LiteRT
 Convert trained model to optimized LiteRT format:
 ```bash
 python src/models/export_litert.py
@@ -121,18 +138,48 @@ The exported LiteRT model is optimized for Android integration with:
 ## Project Milestones
 
 - [x] Project setup and specifications
-- [ ] Dataset preprocessing
+- [x] Dataset preprocessing (modular implementation completed)
+- [x] Dataset verification tools
 - [ ] Model training
 - [ ] Model evaluation
 - [ ] LiteRT export and quantization
 - [ ] Android app integration
 - [ ] Mobile testing and validation
 
+## Verification and Evaluation Tools
+
+### Dataset Verification
+The `verify_labels.py` script helps validate image-label consistency:
+
+```bash
+# Basic usage
+python src/data/verify_labels.py val image_001.jpg
+
+# Hide all labels (show only bounding boxes)
+python src/data/verify_labels.py val image_001.jpg --no-labels
+
+# Show only class names (no indices)
+python src/data/verify_labels.py val image_001.jpg --no-indices
+
+# Show only class indices (no names)
+python src/data/verify_labels.py val image_001.jpg --no-names
+```
+
+**Features:**
+- Visualizes bounding boxes with customizable labels
+- Saves verification images to `data/evaluation/boxed_640x640/<split>/`
+- Provides detailed console output with box coordinates and sizes
+- Supports train/val/test splits
+
 ## Dependencies
 
 Key libraries used in this project:
+- **numpy==2.3.2**: Numerical computing
+- **opencv-python==4.12.0.88**: Image processing and computer vision
+- **pyyaml==6.0.2**: Configuration file handling
+- **scikit-learn==1.7.1**: Data splitting utilities
+- **pillow==11.3.0**: Image processing for verification
 - **ultralytics**: YOLO11 implementation and training
-- **OpenCV**: Image processing and computer vision
 - **Python 3.12**: Core runtime environment
 
 See `requirements.txt` for complete dependency list.
