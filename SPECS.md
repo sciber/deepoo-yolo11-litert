@@ -1,7 +1,7 @@
-# Project Specification: DNN Object Detection for Mobile (LiteRT)
+# Project Specification: Poo Detection for Mobile (LiteRT)
 
 ## 1. Overview
-Fine-tune a Deep Neural Network (DNN) for object detection using a custom dataset captured with mobile cameras. The final model is exported to a LiteRT format optimized for on-device inference, outputting bounding boxes for detected objects.
+Fine-tune a YOLOv11 model for poo detection using a custom dataset captured with mobile cameras. The final model is exported to LiteRT format optimized for on-device inference, outputting bounding boxes for detected poo objects.
 
 ## 2. Datasets
 
@@ -13,7 +13,7 @@ Fine-tune a Deep Neural Network (DNN) for object detection using a custom datase
 - **Subfolders:**
    - **images:** images from camera A and B
    - **masks:** masks from camera A and B
-- **Annotations:** Bitmap masks indicating object presence
+- **Annotations:** Bitmap masks indicating poo presence
 
 ### Processed Dataset
 - **Location:** data/boxed_640x640
@@ -24,16 +24,17 @@ Fine-tune a Deep Neural Network (DNN) for object detection using a custom datase
 
 
 ## 3. Dataset Processing Strategy
-- The preprocessing script `src/data/preprocess.py` iterates over source masks to identify centers of all object segments.
+- The preprocessing script `src/data/preprocess.py` iterates over source masks to identify centers of all poo segments.
 - Data is split into train/val/test (80/10/10) using a fixed seed for reproducibility.
 - Centers closer than `MIN_SEGMENT_DIST` pixels are iteratively merged by replacing each pair with its midpoint until no pair violates the threshold.
-- For each center, assign a 640x640 square whose center is as close as possible to the object center while remaining fully inside the image.
+- For each center, assign a 640x640 square whose center is as close as possible to the poo center while remaining fully inside the image.
 - Filter cutout centers closer than `MIN_CUTOUT_DIST` pixels by merging to a midpoint that still keeps the 640x640 window inside image bounds.
 - If no valid square exists for an image, generate a random 640x640 square inside the image.
 - Crop image–mask pairs by the squares and save to:
   - `data/boxed_640x640/images/{train,val,test}`
   - `data/boxed_640x640/labels/{train,val,test}` (YOLO `*.txt` files)
 - Label file format (per line): `class_id x_center y_center width height` with all values normalized to [0, 1].
+- Class configuration: Single class 'poo' with ID 0 for fine-tuning from pre-trained YOLO11 weights.
 - Also generate `data/boxed_640x640/dataset.yaml` (fields: `path`, `train`, `val`, `test`, `names`).
 - Also generate `data/boxed_640x640/README.md` documenting the dataset.
 
@@ -54,7 +55,9 @@ Key constants used in preprocessing:
   - Use the Ultralytics `ultralytics` Python library to fine-tune, evaluate, and export the model to LiteRT.
 
 ## 5. Mobile Integration
-- Provide instructions for integrating the LiteRT model into the Android app.
+- The exported LiteRT model is optimized for Android integration with full INT8 quantization for maximum efficiency
+- Optimized inference pipeline for mobile hardware
+- Bounding box output format compatible with mobile apps
 
 ## 6. Directory Structure
 ```
@@ -82,19 +85,40 @@ project_root/
 ```
 
 ## 7. Scripts and Utilities
-- `src/data/preprocess.py`: Preprocess datasets
-- `src/models/train.py`: Training pipeline
-- `src/models/eval.py`: Evaluation script and visualization of predictions
+
+### Data Processing
+- `src/data/preprocess.py`: Main preprocessing pipeline (modular implementation)
+- `src/data/mask_utils.py`: Poo center detection and merging utilities
+- `src/data/cutout_utils.py`: Image cutout generation and filtering utilities
+- `src/data/yolo_utils.py`: YOLO label format conversion utilities
+- `src/data/dataset_utils.py`: Dataset configuration and management utilities
+- `src/data/verify_labels.py`: Image-label verification and visualization tool
+
+### Model Training and Export
+- `src/models/train.py`: YOLOv11 training pipeline for poo detection
+- `src/models/eval.py`: Evaluation script and visualization of poo detection predictions
 - `src/models/export_litert.py`: Export/quantize model to fully-INT8 LiteRT format
 
 ## 8. Dependencies
 - Python 3.12
-- OpenCV
-- ultralytics
-- (List to be finalized in `requirements.txt`)
+- numpy==2.3.2
+- opencv-python==4.12.0.88
+- pyyaml==6.0.2
+- scikit-learn==1.7.1
+- pillow==11.3.0
+- ultralytics (for YOLO11 training and export)
+- (Complete list in `requirements.txt`)
 
-## 9. Milestones
-1. Preprocess datasets
+## 9. Verification and Evaluation Tools
+
+### Dataset Verification
+- `src/data/verify_labels.py`: Visualizes images with bounding boxes for manual inspection
+- Usage: `python src/data/verify_labels.py <split> <image_filename>`
+- CLI options: `--no-labels`, `--no-names`, `--no-indices` for customizing label display
+- Outputs saved to: `data/evaluation/boxed_640x640/<split>/verified_<imagename>`
+
+## 10. Milestones
+1. ✅ Preprocess datasets (modular implementation completed)
 2. Train model
 3. Evaluate model
 4. Export model to LiteRT

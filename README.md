@@ -1,17 +1,17 @@
-# DNN Object Detection for Mobile (LiteRT)
+# YOLOv11 Poo Detection for Mobile (LiteRT)
 
-A deep neural network project for object detection optimized for mobile devices using YOLO11 and LiteRT format.
+A deep neural network project for poo detection optimized for mobile devices using YOLOv11 and LiteRT format.
 
 ## Overview
 
-This project fine-tunes a YOLO11 model for object detection using custom datasets captured with mobile cameras. The final model is exported to LiteRT format for efficient on-device inference, outputting bounding boxes for detected objects.
+This project implements a YOLOv11-based poo detection system optimized for mobile deployment using LiteRT. The model is trained on a custom dataset containing poo examples and exported to LiteRT format for efficient on-device inference.
 
 ## Features
 
-- **Custom Dataset Processing**: Converts semantic masks to YOLO-format bounding box annotations
-- **YOLO11 Fine-tuning**: Leverages state-of-the-art object detection architecture
+- **Custom Dataset**: Preprocessed from semantic masks containing poo annotations to YOLO format bounding box annotations
+- **YOLOv11 Fine-tuning**: Leverages state-of-the-art object detection architecture
 - **Mobile Optimization**: Exports to LiteRT format for Android integration
-- **Automated Pipeline**: Complete workflow from data preprocessing to model deployment
+- **Automated Pipeline**: Complete workflow from poo data preprocessing to model deployment
 
 ## Project Structure
 
@@ -52,14 +52,14 @@ project_root/
 ### Source Data
 - **Location**: `data/semantic_masks/`
 - **Dataset A**: 1000x1000 pixel cutouts with masks
-- **Dataset B**: 720x960 images with masks
-- **Format**: Bitmap masks indicating object presence
+- **Dataset B**: 720x960 images with poo masks
+- **Format**: Bitmap masks indicating poo presence
 
 ### Processed Data
 - **Location**: `data/boxed_640x640/`
-- **Format**: 640x640 pixel cutouts with YOLO annotations
+- **Format**: 640x640 pixel cutouts with YOLO poo annotations
 - **Split**: 80/10/10 (train/val/test)
-- **Labels**: Normalized bounding boxes in YOLO format
+- **Labels**: Normalized poo bounding boxes in YOLO format
 - **Class**: Single class 'poo' with ID 0 for fine-tuning
 
 ## Getting Started
@@ -84,19 +84,19 @@ pip install -r requirements.txt
 ### Usage
 
 #### 1. Data Preprocessing
-Convert semantic masks to YOLO-format dataset:
+Process semantic masks containing poo annotations to generate YOLO-format dataset:
 ```bash
 python src/data/preprocess.py
 ```
 
 #### 2. Model Training
-Train the YOLO11 model:
+Train YOLOv11 model on the processed poo dataset:
 ```bash
 python src/models/train.py
 ```
 
 #### 3. Model Evaluation
-Evaluate model performance and visualize predictions:
+Evaluate poo detection performance and visualize predictions:
 ```bash
 python src/models/eval.py
 ```
@@ -115,9 +115,9 @@ python src/models/export_litert.py
 
 ## Model Architecture
 
-**YOLO11** was selected for its:
-- State-of-the-art performance on mobile and edge devices
-- Optimal accuracy-to-efficiency ratio for object detection
+**YOLOv11** was selected for its:
+- State-of-the-art object detection performance on mobile and edge devices
+- Optimal accuracy-to-efficiency ratio for real-time object detection
 - Pre-trained weights for effective transfer learning
 - Built-in support for LiteRT optimization and export
 
@@ -149,7 +149,7 @@ The exported LiteRT model is optimized for Android integration with:
 ## Verification and Evaluation Tools
 
 ### Dataset Verification
-The `verify_labels.py` script helps validate image-label consistency:
+The `verify_labels.py` script helps validate poo image-label consistency:
 
 ```bash
 # Basic usage
@@ -166,9 +166,9 @@ python src/data/verify_labels.py val image_001.jpg --no-names
 ```
 
 **Features:**
-- Visualizes bounding boxes with customizable labels
+- Visualizes poo bounding boxes with customizable labels
 - Saves verification images to `data/evaluation/boxed_640x640/<split>/`
-- Provides detailed console output with box coordinates and sizes
+- Provides detailed console output with poo box coordinates and sizes
 - Supports train/val/test splits
 
 ## Dependencies
@@ -186,4 +186,4 @@ See `requirements.txt` for complete dependency list.
 
 ## License
 
-This project is developed for mobile object detection research and development.
+This project is developed for mobile poo detection research and development.
