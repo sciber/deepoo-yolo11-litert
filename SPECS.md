@@ -95,7 +95,13 @@ project_root/
 - `src/data/verify_labels.py`: Image-label verification and visualization tool
 
 ### Model Training and Export
-- `src/models/train.py`: YOLOv11 training pipeline for poo detection
+- `src/models/train.py`: Comprehensive YOLOv11 training pipeline with CLI interface
+  - Supports all YOLOv11 model variants (n, s, m, l, x)
+  - Configurable training parameters (epochs, batch size, image size)
+  - Auto batch size detection and device selection
+  - Early stopping with patience control
+  - Automatic best model checkpoint saving
+  - Training metrics display and logging
 - `src/models/eval.py`: Evaluation script and visualization of poo detection predictions
 - `src/models/export_litert.py`: Export/quantize model to fully-INT8 LiteRT format
 
@@ -117,9 +123,40 @@ project_root/
 - CLI options: `--no-labels`, `--no-names`, `--no-indices` for customizing label display
 - Outputs saved to: `data/evaluation/boxed_640x640/<split>/verified_<imagename>`
 
-## 10. Milestones
+## 10. Training Configuration
+The training script supports comprehensive configuration options:
+
+### Command Line Interface
+```bash
+# Basic usage
+python src/models/train.py --data data/boxed_640x640/dataset.yaml --output models/
+
+# Full parameter example
+python src/models/train.py \
+    --data data/boxed_640x640/dataset.yaml \
+    --output models/ \
+    --model yolo11s.pt \
+    --epochs 200 \
+    --imgsz 640 \
+    --batch 16 \
+    --device 0 \
+    --workers 8 \
+    --patience 50 \
+    --save-period 10 \
+    --project runs/detect \
+    --name poo_detection_experiment
+```
+
+### Training Parameters
+- **Model Selection**: Choose from yolo11n.pt (fastest) to yolo11x.pt (most accurate)
+- **Auto Configuration**: Automatic batch size and device detection
+- **Early Stopping**: Configurable patience for optimal training
+- **Checkpoint Management**: Automatic best model saving and periodic checkpoints
+- **Experiment Tracking**: Organized output with project/name structure
+
+## 11. Milestones
 1. ✅ Preprocess datasets (modular implementation completed)
-2. Train model
+2. ✅ Train model (comprehensive CLI implementation completed)
 3. Evaluate model
 4. Export model to LiteRT
 5. Integrate model into Android app

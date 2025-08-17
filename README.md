@@ -92,7 +92,16 @@ python src/data/preprocess.py
 #### 2. Model Training
 Train YOLOv11 model on the processed poo dataset:
 ```bash
-python src/models/train.py
+# Basic training with required arguments
+python src/models/train.py --data data/boxed_640x640/dataset.yaml --output models/
+
+# Advanced training with custom parameters
+python src/models/train.py --data data/boxed_640x640/dataset.yaml --output models/ \
+    --model yolo11s.pt --epochs 200 --batch 16 --device 0
+
+# Training with early stopping and custom experiment name
+python src/models/train.py --data data/boxed_640x640/dataset.yaml --output models/ \
+    --patience 30 --name poo_detection_v1
 ```
 
 #### 3. Model Evaluation
@@ -112,6 +121,32 @@ Convert trained model to optimized LiteRT format:
 ```bash
 python src/models/export_litert.py
 ```
+
+## Model Training
+
+### Training Script Features
+The `src/models/train.py` script provides a comprehensive training interface:
+
+**Model Variants:**
+- `yolo11n.pt`: Nano (fastest, smallest)
+- `yolo11s.pt`: Small (balanced)
+- `yolo11m.pt`: Medium (higher accuracy)
+- `yolo11l.pt`: Large (best accuracy)
+- `yolo11x.pt`: Extra Large (maximum accuracy)
+
+**Key Parameters:**
+- `--epochs`: Training epochs (default: 100)
+- `--imgsz`: Input image size (default: 640)
+- `--batch`: Batch size (-1 for auto-detection)
+- `--device`: GPU/CPU selection (auto-detection if empty)
+- `--patience`: Early stopping patience (default: 50)
+- `--workers`: Data loading threads (default: 8)
+
+**Features:**
+- Automatic best model checkpoint saving
+- Training metrics display and logging
+- Path validation and error handling
+- Experiment organization with project/name structure
 
 ## Model Architecture
 
@@ -140,7 +175,7 @@ The exported LiteRT model is optimized for Android integration with:
 - [x] Project setup and specifications
 - [x] Dataset preprocessing (modular implementation completed)
 - [x] Dataset verification tools
-- [ ] Model training
+- [x] Model training (comprehensive CLI implementation completed)
 - [ ] Model evaluation
 - [ ] LiteRT export and quantization
 - [ ] Android app integration
