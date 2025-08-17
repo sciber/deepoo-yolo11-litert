@@ -107,7 +107,15 @@ python src/models/train.py --data data/boxed_640x640/dataset.yaml --output model
 #### 3. Model Evaluation
 Evaluate poo detection performance and visualize predictions:
 ```bash
-python src/models/eval.py
+# Basic evaluation
+python src/models/eval.py --model models/best.pt --data data/boxed_640x640/dataset.yaml
+
+# Evaluation with visualization of 10 examples
+python src/models/eval.py --model models/best.pt --data data/boxed_640x640/dataset.yaml --visualize 10
+
+# Advanced evaluation with custom parameters
+python src/models/eval.py --model models/best.pt --data data/boxed_640x640/dataset.yaml \
+    --split test --visualize 5 --conf 0.3 --iou 0.5 --device 0
 ```
 
 #### 4. Verify Dataset (Optional)
@@ -176,12 +184,38 @@ The exported LiteRT model is optimized for Android integration with:
 - [x] Dataset preprocessing (modular implementation completed)
 - [x] Dataset verification tools
 - [x] Model training (comprehensive CLI implementation completed)
-- [ ] Model evaluation
+- [x] Model evaluation (with visualization capabilities completed)
 - [ ] LiteRT export and quantization
 - [ ] Android app integration
 - [ ] Mobile testing and validation
 
 ## Verification and Evaluation Tools
+
+### Model Evaluation
+The `eval.py` script provides comprehensive model evaluation with visualization:
+
+```bash
+# Basic evaluation with metrics
+python src/models/eval.py --model models/best.pt --data data/boxed_640x640/dataset.yaml
+
+# Evaluation with prediction visualization
+python src/models/eval.py --model models/best.pt --data data/boxed_640x640/dataset.yaml --visualize 10
+```
+
+**Features:**
+- Comprehensive evaluation metrics using Ultralytics API
+- Configurable confidence and IoU thresholds
+- Random sample visualization from any dataset split
+- Side-by-side ground truth vs prediction comparison
+- Automatic output organization with experiment tracking
+- Shared visualization utilities with verification script
+
+**Key Parameters:**
+- `--visualize N`: Number of examples to visualize (0 to disable)
+- `--split`: Dataset split to evaluate (train/val/test)
+- `--conf`: Confidence threshold for predictions (default: 0.25)
+- `--iou`: IoU threshold for NMS (default: 0.45)
+- `--output`: Directory for visualization outputs
 
 ### Dataset Verification
 The `verify_labels.py` script helps validate poo image-label consistency:

@@ -102,7 +102,13 @@ project_root/
   - Early stopping with patience control
   - Automatic best model checkpoint saving
   - Training metrics display and logging
-- `src/models/eval.py`: Evaluation script and visualization of poo detection predictions
+- `src/models/eval.py`: Comprehensive evaluation script with Ultralytics API integration
+  - Model performance metrics calculation
+  - Configurable confidence and IoU thresholds
+  - Random sample visualization from any dataset split
+  - Ground truth vs prediction comparison
+  - Shared visualization utilities with verify_labels.py
+  - Automatic output organization and experiment tracking
 - `src/models/export_litert.py`: Export/quantize model to fully-INT8 LiteRT format
 
 ## 8. Dependencies
@@ -154,10 +160,40 @@ python src/models/train.py \
 - **Checkpoint Management**: Automatic best model saving and periodic checkpoints
 - **Experiment Tracking**: Organized output with project/name structure
 
-## 11. Milestones
+## 11. Evaluation Configuration
+The evaluation script supports comprehensive model assessment:
+
+### Command Line Interface
+```bash
+# Basic evaluation
+python src/models/eval.py --model models/best.pt --data data/boxed_640x640/dataset.yaml
+
+# Evaluation with visualization
+python src/models/eval.py --model models/best.pt --data data/boxed_640x640/dataset.yaml --visualize 10
+
+# Advanced evaluation with custom parameters
+python src/models/eval.py \
+    --model models/best.pt \
+    --data data/boxed_640x640/dataset.yaml \
+    --split test \
+    --visualize 5 \
+    --conf 0.3 \
+    --iou 0.5 \
+    --device 0 \
+    --output data/evaluation/predictions
+```
+
+### Evaluation Features
+- **Metrics Calculation**: Comprehensive performance metrics via Ultralytics API
+- **Visualization**: Random sample visualization with ground truth vs prediction comparison
+- **Flexible Configuration**: Configurable confidence/IoU thresholds and dataset splits
+- **Output Management**: Organized visualization outputs with experiment tracking
+- **Shared Utilities**: Reuses visualization functions from verify_labels.py for consistency
+
+## 12. Milestones
 1. ✅ Preprocess datasets (modular implementation completed)
 2. ✅ Train model (comprehensive CLI implementation completed)
-3. Evaluate model
+3. ✅ Evaluate model (with visualization capabilities completed)
 4. Export model to LiteRT
 5. Integrate model into Android app
 6. Test model on Android app
