@@ -222,6 +222,31 @@ The exported LiteRT model is optimized for Android integration with:
 - [x] Model evaluation (with visualization capabilities completed)
 - [x] LiteRT export and quantization (with Android integration guidance)
 
+## Complete Pipeline Notebook
+
+### Interactive Jupyter Notebook
+For a complete end-to-end pipeline experience, use the provided Jupyter notebook:
+
+```bash
+# Launch Jupyter notebook
+jupyter notebook notebooks/complete_pipeline.ipynb
+```
+
+The notebook provides:
+- **Automated Setup**: Project cloning and dependency installation
+- **Dataset Management**: Download and extraction of semantic_masks dataset
+- **Complete Pipeline**: Preprocessing → Training → Evaluation → Export
+- **Interactive Configuration**: Customizable parameters with good defaults
+- **Real-time Visualization**: Training progress and prediction results
+- **Mobile-Ready Export**: Optimized LiteRT models for Android
+
+### Configuration Options
+The notebook includes comprehensive configuration options:
+- Model variants (YOLOv11n/s/m/l/x)
+- Training parameters (epochs, batch size, patience)
+- Evaluation settings (confidence, IoU thresholds)
+- Export optimizations (quantization, simplification)
+
 ## Verification and Evaluation Tools
 
 ### Model Evaluation
