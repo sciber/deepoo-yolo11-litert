@@ -127,7 +127,15 @@ python src/data/verify_labels.py val <image_filename>
 #### 5. Export to LiteRT
 Convert trained model to optimized LiteRT format:
 ```bash
-python src/models/export_litert.py
+# Basic export to LiteRT
+python src/models/export_litert.py --model models/best.pt --output models/
+
+# Export with INT8 quantization for maximum mobile efficiency
+python src/models/export_litert.py --model models/best.pt --output models/ --quantize --data data/boxed_640x640/dataset.yaml
+
+# Advanced export with optimizations
+python src/models/export_litert.py --model models/best.pt --output models/ \
+    --quantize --data data/boxed_640x640/dataset.yaml --optimize --simplify
 ```
 
 ## Model Training
@@ -171,12 +179,39 @@ The `src/models/train.py` script provides a comprehensive training interface:
 - **Image Size**: 640x640 pixels for training and inference
 - **Data Split**: 80% training, 10% validation, 10% testing
 
-## Mobile Integration
+## LiteRT Export and Mobile Integration
 
+### Export Features
+The `export_litert.py` script provides comprehensive model export capabilities:
+
+```bash
+# Basic LiteRT export
+python src/models/export_litert.py --model models/best.pt --output models/
+
+# Quantized export for maximum mobile efficiency
+python src/models/export_litert.py --model models/best.pt --output models/ --quantize --data data/boxed_640x640/dataset.yaml
+```
+
+**Export Options:**
+- `--quantize`: Enable INT8 quantization for 4x smaller models
+- `--optimize`: Apply mobile-specific optimizations
+- `--simplify`: Simplify model graph for better compatibility
+- `--imgsz`: Input image size (should match training)
+- `--batch`: Batch size (1 recommended for mobile)
+
+### Android Integration
 The exported LiteRT model is optimized for Android integration with:
-- Full INT8 quantization for maximum efficiency
+- Full INT8 quantization for maximum efficiency (up to 4x size reduction)
 - Optimized inference pipeline for mobile hardware
-- Bounding box output format compatible with mobile apps
+- TensorFlow Lite Android API compatibility
+- Automatic model inspection and integration guidance
+
+**Integration Steps:**
+1. Copy the exported `.tflite` file to your Android app's assets folder
+2. Use TensorFlow Lite Android API to load the model
+3. Input format: RGB images normalized to [0,1] at 640x640 resolution
+4. Output format: YOLO detection format (bounding boxes, scores, classes)
+5. Model supports real-time inference on mobile devices
 
 ## Project Milestones
 
@@ -185,9 +220,7 @@ The exported LiteRT model is optimized for Android integration with:
 - [x] Dataset verification tools
 - [x] Model training (comprehensive CLI implementation completed)
 - [x] Model evaluation (with visualization capabilities completed)
-- [ ] LiteRT export and quantization
-- [ ] Android app integration
-- [ ] Mobile testing and validation
+- [x] LiteRT export and quantization (with Android integration guidance)
 
 ## Verification and Evaluation Tools
 

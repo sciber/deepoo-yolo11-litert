@@ -109,7 +109,12 @@ project_root/
   - Ground truth vs prediction comparison
   - Shared visualization utilities with verify_labels.py
   - Automatic output organization and experiment tracking
-- `src/models/export_litert.py`: Export/quantize model to fully-INT8 LiteRT format
+- `src/models/export_litert.py`: Comprehensive LiteRT export script with quantization
+  - INT8 quantization for maximum mobile efficiency (4x size reduction)
+  - Mobile-specific optimizations and graph simplification
+  - Automatic model inspection and Android integration guidance
+  - Configurable export parameters (image size, batch size, device)
+  - TensorFlow Lite compatibility validation
 
 ## 8. Dependencies
 - Python 3.12
@@ -190,11 +195,45 @@ python src/models/eval.py \
 - **Output Management**: Organized visualization outputs with experiment tracking
 - **Shared Utilities**: Reuses visualization functions from verify_labels.py for consistency
 
-## 12. Milestones
+## 13. LiteRT Export Configuration
+The export script provides comprehensive model optimization for mobile deployment:
+
+### Command Line Interface
+```bash
+# Basic LiteRT export
+python src/models/export_litert.py --model models/best.pt --output models/
+
+# Quantized export with calibration dataset
+python src/models/export_litert.py --model models/best.pt --output models/ --quantize --data data/boxed_640x640/dataset.yaml
+
+# Advanced export with all optimizations
+python src/models/export_litert.py \
+    --model models/best.pt \
+    --output models/ \
+    --quantize \
+    --data data/boxed_640x640/dataset.yaml \
+    --optimize \
+    --simplify \
+    --imgsz 640 \
+    --batch 1
+```
+
+### Export Features
+- **INT8 Quantization**: Reduces model size by up to 4x while maintaining accuracy
+- **Mobile Optimizations**: Graph optimizations specifically for mobile hardware
+- **Model Simplification**: Removes unnecessary operations for better compatibility
+- **Automatic Validation**: TensorFlow Lite compatibility checking
+- **Android Integration**: Automatic guidance for Android app integration
+
+### Android Integration Guidance
+- Automatic file size and format reporting
+- Input/output tensor specifications
+- Integration code examples and best practices
+- Performance optimization recommendations
+
+## 14. Milestones
 1. ✅ Preprocess datasets (modular implementation completed)
 2. ✅ Train model (comprehensive CLI implementation completed)
 3. ✅ Evaluate model (with visualization capabilities completed)
-4. Export model to LiteRT
-5. Integrate model into Android app
-6. Test model on Android app
+4. ✅ Export model to LiteRT (with quantization and Android integration)
 
