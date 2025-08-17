@@ -227,8 +227,10 @@ The exported LiteRT model is optimized for Android integration with:
 ### Interactive Jupyter Notebook
 For a complete end-to-end pipeline experience, use the provided Jupyter notebook:
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sciber/deepoo-yolo11-litert/blob/main/notebooks/complete_pipeline.ipynb)
+
 ```bash
-# Launch Jupyter notebook
+# Or launch locally
 jupyter notebook notebooks/complete_pipeline.ipynb
 ```
 
